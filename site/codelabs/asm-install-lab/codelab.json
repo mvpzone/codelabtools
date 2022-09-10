@@ -1,0 +1,23 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2020-08-10T18:27:57-07:00",
+  "id": "asm-install-lab",
+  "duration": 16,
+  "title": "202 - Install Anthos Service Mesh on GKE",
+  "authors": "Vinesh",
+  "summary": "ASM Install",
+  "source": "asm-install.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "cloud"
+  ],
+  "tags": [],
+  "feedback": "https://codelabs.devnull.fyi",
+  "url": "asm-install-lab"
+}

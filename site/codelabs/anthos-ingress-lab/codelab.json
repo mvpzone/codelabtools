@@ -1,0 +1,23 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2020-08-10T20:37:10-07:00",
+  "id": "anthos-ingress-lab",
+  "duration": 30,
+  "title": "204 - Deploying Ingress across multiple clusters",
+  "authors": "Vinesh",
+  "summary": "Ingress for Anthos Lab",
+  "source": "anthos-ingress.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "cloud"
+  ],
+  "tags": [],
+  "feedback": "https://codelabs.devnull.fyi",
+  "url": "anthos-ingress-lab"
+}

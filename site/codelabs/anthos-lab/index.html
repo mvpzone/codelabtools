@@ -1,0 +1,107 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>101 - Anthos Workshop Lab</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="anthos-lab"
+                  title="101 - Anthos Workshop Lab"
+                  environment="web"
+                  feedback-link="http://mvpzone.org">
+    
+      <google-codelab-step label="Contents" duration="5">
+        <p>Welcome to the Anthos Workshop labs! Over the course of these labs, you will learn &amp; explore how Anthos can help  manage hybrid cloud environments with a consistent set of deployment environments and tools.</p>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>1</p>
+</td><td colspan="1" rowspan="1"><p><a href="/codelabs/install-anthos/index.html" target="_blank">Install Anthos</a></p>
+</td><td colspan="1" rowspan="1"><p><a href="go/sme-form-1" target="_blank">go/sme-form-1</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>2</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://docs.google.com/document/d/1M09e5krI22PeFJ31_906uno_180XuHeBjGsOJ8CkEj0/edit?usp=sharing" target="_blank">Deploy an Application to Anthos with Cloud Build</a></p>
+</td><td colspan="1" rowspan="1"><p><a href="go/sme-form-2" target="_blank">go/sme-form-2</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>3</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://docs.google.com/document/d/1plbuAD42hAdSGLY5exl6_sYQYz-C9m7l8ib6u8qhYXY/edit?usp=sharing" target="_blank">Observability with Cloud Operations and Service Mesh</a></p>
+</td><td colspan="1" rowspan="1"><p><a href="go/sme-form-3" target="_blank">go/sme-form-3</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>4</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://docs.google.com/document/d/1yNma6NXRD8quwI5e7lr1c8pBE03i5FKHn_PYPEH14cw/edit?usp=sharing" target="_blank">Safe Application Rollouts with Service Mesh</a></p>
+</td><td colspan="1" rowspan="1"><p><a href="go/sme-form-4" target="_blank">go/sme-form-4</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>5</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://docs.google.com/document/d/1TOra4JzYhdDgMThf4UTEXhtImfjbPimQVLdgHa7ika4/edit?usp=sharing" target="_blank">Secure Your Anthos Environment with Config Management</a></p>
+</td><td colspan="1" rowspan="1"><p><a href="go/sme-form-5" target="_blank">go/sme-form-5</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>6</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://docs.google.com/document/d/1KUb75l-2I9sf51LgdpvOdaWkso7xO97NfP1iVt75THQ/edit?usp=sharing" target="_blank">Validate and Test Anthos Configuration</a></p>
+</td><td colspan="1" rowspan="1"><p><a href="go/sme-form-6" target="_blank">go/sme-form-6</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>7</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://docs.google.com/document/d/1H6OZbsNmXUEo_CSn6WblzXlwCvJ0FR578uDWwIuzK2c/edit?usp=sharing" target="_blank">Secure the Software Supply Chain with Binary Authorization</a></p>
+</td><td colspan="1" rowspan="1"><p><a href="go/sme-form-7" target="_blank">go/sme-form-7</a></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Architecture</h2>
+<p class="image-container"><img alt="Anthos Labs Architecture" src="img/15f2d6fdd932dea5.png"></p>
+<p><strong>NOTE:</strong> As of June 2020, these labs use open-source Istio 1.6.2 and not managed Anthos Service Mesh (ASM). This is because ASM does not yet support multiple clusters (and multi-cluster with non-GKE on GCP) as of mid June 2020. We plan to upgrade these labs to ASM as soon ASM multicluster is publicly available and we have validated the labs with ASM.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Reconnecting to your environment" duration="2">
+        <p>If you return to these labs later, your laptop goes to sleep, or your Cloud Shell is spontaneously disconnected, run the following commands:</p>
+<pre><code>export PROJECT_ID=&lt;your-sme-project-id&gt;
+gcloud config set project $PROJECT_ID
+
+cd $HOME/hybrid-sme/bank-of-anthos-scripts/install
+source ./env
+source ./common/install-tools.sh
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Having Trouble" duration="1">
+        <p>These labs are new for Q3 ‘20, and you may hit a roadblock or a bug. If this happens, email the labs Google Group - <a href="mailto:hybrid-sme-labs-2020@google.com" target="_blank">hybrid-sme-labs-2020@google.com</a>, and a lab owner will be in touch to help.</p>
+<p>Congratulations! You just installed the core Anthos components on your GCP project. Now you&#39;re ready to deploy an application onto your simulated hybrid cloud environment.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Cleanup" duration="2">
+        <p>To clean up your Anthos environment (clusters, firewall rules) but keep your GCP project intact, run the following script:</p>
+<pre><code>cd ${HOME}/hybrid-sme/bank-of-anthos-scripts/install
+./cleanup.sh
+</code></pre>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

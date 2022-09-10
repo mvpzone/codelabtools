@@ -1,0 +1,80 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>203 - Online Boutique application Canary Deployment</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="asm-canary-lab"
+                  title="203 - Online Boutique application Canary Deployment"
+                  environment="web"
+                  feedback-link="https://codelabs.devnull.fyi">
+    
+      <google-codelab-step label="Deploying the Online Boutique application on ASM" duration="2">
+        <p>In this activity you will install the Online Boutique sample application to explore capablities of Anthos Service Mesh.</p>
+<p>The activties to be performed are outlined <a href="https://cloud.google.com/service-mesh/docs/onlineboutique-install-kpt" target="_blank">here</a>.</p>
+<p class="image-container"><img alt="Onlibe Boutique Application Architecture" src="img/a216cf5c52b7fca0.png"></p>
+<p>Online Boutique is a cloud-native microservices demo application. Online Boutique consists of a 10-tier microservices application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them. You can find more details about the online boutique application in the following <a href="https://github.com/GoogleCloudPlatform/microservices-demo" target="_blank">github repo</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Canary Deployment" duration="15">
+        <h2 is-upgraded>Overview</h2>
+<p>In this lab you will explore application deployments and traffic management with ASM. We will also notice how ASM is compatible with Istio.</p>
+<p><img alt="Online Boutique Application Product Catalogue" src="img/236f1d0fc6d7147a.png"><br>While this online boutique app has multiple components, we&#39;ll focus on Product Catalog, which serves the list of products above. We will run through a traffic routing example, using a <a href="https://istio.io/docs/concepts/traffic-management/#splitting-traffic-between-versions" target="_blank">canary</a> deployment.</p>
+<p>A canary deployment routes a small percentage of traffic to a new version of a microservice, then allows you to gradually roll it out to the whole user base, while phasing out and retiring the old version. If something goes wrong during this process, traffic can be switched back to the old version.</p>
+<p class="image-container"><img alt="Canary Deployment" src="img/b5357b9c1c5688e3.jpg"></p>
+<p>We create a new version of the ProductCatalog microservice. The new version (&#34;v2&#34;) is deployed to Kubernetes alongside the working (&#34;v1&#34;) deployment.</p>
+<p>Then, we create an Istio VirtualService (traffic rule) that sends 25% of ProductCatalog traffic to v2. We can deploy this rule to the Kubernetes cluster, alongside our application. With this policy, no matter how much production traffic goes to ProductCatalog—and how many pods scale up as a result—Istio ensures that the right percentage of traffic goes to the specified version of ProductCatalog.</p>
+<h2 is-upgraded>Canary Deployment</h2>
+<p>The activties to be performed are outlined <a href="https://github.com/mvpzone/istio-samples/tree/master/istio-canary-gke" target="_blank">here</a>.</p>
+<p><strong>Note:</strong> The instructions in the repo are based on Istio and equally apply to our ASM environment too.</p>
+<p>We have already completed the pre-requsites of setting up a GKE cluster and installing ASM. So we only need to start from the step requiring us to <a href="https://github.com/mvpzone/istio-samples/tree/master/istio-canary-gke#deploy-productcatalog-v2" target="_blank">deploy the v2 of product catalogue</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Canary Rollback" duration="12">
+        <p>In this activity we will troubeshoot the canary deployment and perform a roll-back of the deployment. The product catalogue v2 has a three-second latency injected into all requests.</p>
+<p>We skip the <a href="https://github.com/mvpzone/istio-samples/tree/master/istio-canary-gke#view-traffic-splitting-in-kiali" target="_blank">Kiali activity</a> since we will use Anthos Service Mesh UI instead.</p>
+<p>Once the v2 canary version is deployed, we can explore using the Anthos Service Mesh UI to see how ProductCatalog v2 is performing. Notice that we are looking at the Response Latency metric, this tells us the time it takes for each service to respond to requests.</p>
+<p>Here, we can see ProductCatalog v2&#39;s injected three-second latency. From here, it&#39;s easy to roll back from v2 to v1. We can do this by updating the Istio VirtualService to return 100% of traffic to v1, then deleting the v2 Kubernetes deployment.</p>
+<p>Instructions to perform a rollback of the canary is outlined <a href="https://github.com/mvpzone/istio-samples/tree/master/istio-canary-gke#rollback" target="_blank">here</a>.</p>
+<p><strong>Note:</strong> Skip the <a href="https://github.com/mvpzone/istio-samples/tree/master/istio-canary-gke#cleanup" target="_blank">cleanup step</a> since we will be reusing this deployment for further labs.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Having Trouble" duration="1">
+        <p>These labs are new for Q2 ‘20, and you may hit a roadblock or a bug. If this happens, email the labs Google Group - <a href="mailto:hybrid-sme-labs-2020@google.com" target="_blank">hybrid-sme-labs-2020@google.com</a>, and a lab owner will be in touch to help.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

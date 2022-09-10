@@ -1,0 +1,23 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2020-08-10T20:03:25-07:00",
+  "id": "anthos-lab",
+  "duration": 10,
+  "title": "101 - Anthos Workshop Lab",
+  "authors": "Vinesh",
+  "summary": "Anthos Labs",
+  "source": "anthos-lab.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "cloud"
+  ],
+  "tags": [],
+  "feedback": "http://mvpzone.org",
+  "url": "anthos-lab"
+}

@@ -1,0 +1,23 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2020-08-10T20:03:32-07:00",
+  "id": "asm-lab",
+  "duration": 15,
+  "title": "201 - Anthos Service Mesh Lab",
+  "authors": "Vinesh",
+  "summary": "Anthos Service Mesh Lab",
+  "source": "asm-lab.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "cloud"
+  ],
+  "tags": [],
+  "feedback": "https://codelabs.devnull.fyi",
+  "url": "asm-lab"
+}

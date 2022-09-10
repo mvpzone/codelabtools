@@ -1,0 +1,69 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>204 - Deploying Ingress across multiple clusters</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="anthos-ingress-lab"
+                  title="204 - Deploying Ingress across multiple clusters"
+                  environment="web"
+                  feedback-link="https://codelabs.devnull.fyi">
+    
+      <google-codelab-step label="Overview" duration="4">
+        <p>Ingress for Anthos (Ingress) is a cloud-hosted multi-cluster ingress controller for Anthos GKE clusters. It&#39;s a Google-hosted service that supports deploying shared load balancing resources across clusters and across regions.</p>
+<p>In this lab you will install Ingress for Anthos across multiple GKE clusters in your environment.</p>
+<p>An overview of Ingress for anthos is outlined <a href="https://cloud.google.com/kubernetes-engine/docs/concepts/ingress-for-anthos" target="_blank">here</a>.</p>
+<p class="image-container"><img alt="Ingress for Anthos Architecture" src="img/3ef5f431789132e2.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setting up Ingress for Anthos" duration="10">
+        <p>You would need 2 GKE clusters to complete this lab. Set-up two GKE clusters in 2 different regions (e.g. us-west1 &amp; europe-west-1).</p>
+<p>Instructions on how to set-up an environment for Ingress for Anthos can be found <a href="https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-for-anthos-setup" target="_blank">here</a>.</p>
+<p>For this lab We won&#39;t need to follow the <a href="https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-for-anthos-setup#shared_vpc_deployment" target="_blank">Shared VPC instructions</a>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Deploying Ingress across clusters" duration="15">
+        <p>you will deploy a fictional app named zoneprinter and Ingress for Anthos in two clusters. The Ingress provides a shared virtual IP (VIP) address for the app deployments.</p>
+<p>This page builds upon the work done in Setting up Ingress for Anthos, where you created and registered two clusters.</p>
+<p>Instructions for this activity can be found <a href="https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-for-anthos" target="_blank">here</a>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Having Trouble" duration="1">
+        <p>These labs are new for Q2 ‘20, and you may hit a roadblock or a bug. If this happens, email the labs Google Group - <a href="mailto:hybrid-sme-labs-2020@google.com" target="_blank">hybrid-sme-labs-2020@google.com</a>, and a lab owner will be in touch to help.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

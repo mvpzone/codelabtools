@@ -1,0 +1,65 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>205 - ASM Multi-Cluster Replicated Control Plane</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="asm-mcrcp-lab"
+                  title="205 - ASM Multi-Cluster Replicated Control Plane"
+                  environment="web"
+                  feedback-link="https://codelabs.devnull.fyi">
+    
+      <google-codelab-step label="Overview" duration="4">
+        <p>Follow this guide to install an Istio <a href="https://istio.io/latest/docs/ops/deployment/deployment-models/#multiple-clusters" target="_blank">multicluster deployment</a> with replicated <a href="https://istio.io/latest/docs/ops/deployment/deployment-models/#control-plane-models" target="_blank">control plane</a> instances in every cluster and using gateways to connect services across clusters.</p>
+<p>Instead of using a shared Istio control plane to manage the mesh, in this configuration each cluster has its own Istio control plane installation, each managing its own endpoints.</p>
+<p>A single Istio service mesh across the clusters is achieved by replicating shared services and namespaces and using a common root CA in all of the clusters. Cross-cluster communication occurs over the Istio gateways of the respective clusters.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Add clusters to an Anthos Service Mesh" duration="30">
+        <h2 is-upgraded>Join two clusters with Anthos Service Mesh into a single mesh</h2>
+<p>To join two clusters we will use ASM 1.6&#39;s Multi Cluster feature. This is a specific mode of multicluster Istio where two separate Kubernetes clusters run their own Istio control plane, and orchestrate their own mesh.</p>
+<p>In this lab you will unite two clusters with Anthos Service Mesh pre-installed into one logical, hybrid mesh, by enabling cross-cluster load balancing between them. Is is possible to extend this process to incorporate any number of clusters into a single mesh.</p>
+<p>Instructions for this activity can be found <a href="https://cloud.google.com/service-mesh/docs/gke-install-multi-cluster" target="_blank">here</a>.</p>
+<h2 is-upgraded>Deploy Online Boutique Application across clusters</h2>
+<p>In this activity we will orchestrate the online boutique application with Anthos Service Mesh across two different Google Kubernetes Engine clusters.</p>
+<p>Instructions for this activity can be found <a href="https://github.com/mvpzone/hipster/tree/master/mcrcp" target="_blank">here</a>.</p>
+<p class="image-container"><img alt="Boutique Multi-Cluster Deployment" src="img/edbdf0193120121f.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Having Trouble" duration="1">
+        <p>These labs are new for Q2 ‘20, and you may hit a roadblock or a bug. If this happens, email the labs Google Group - <a href="mailto:hybrid-sme-labs-2020@google.com" target="_blank">hybrid-sme-labs-2020@google.com</a>, and a lab owner will be in touch to help.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

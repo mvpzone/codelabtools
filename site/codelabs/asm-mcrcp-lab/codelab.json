@@ -1,0 +1,23 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2020-08-10T21:13:31-07:00",
+  "id": "asm-mcrcp-lab",
+  "duration": 35,
+  "title": "205 - ASM Multi-Cluster Replicated Control Plane",
+  "authors": "Vinesh",
+  "summary": "ASM Multi-Cluster Lab",
+  "source": "asm-mcrcp.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "cloud"
+  ],
+  "tags": [],
+  "feedback": "https://codelabs.devnull.fyi",
+  "url": "asm-mcrcp-lab"
+}

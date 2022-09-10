@@ -1,0 +1,23 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2020-08-10T21:38:31-07:00",
+  "id": "asm-marketplace-lab",
+  "duration": 10,
+  "title": "206 - Anthos Marketplace Lab",
+  "authors": "Vinesh",
+  "summary": "ASM Marketplace",
+  "source": "anthos-marketplace.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "cloud"
+  ],
+  "tags": [],
+  "feedback": "https://codelabs.devnull.fyi",
+  "url": "asm-marketplace-lab"
+}

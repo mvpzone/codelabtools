@@ -1,0 +1,115 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>201 - Anthos Service Mesh Lab</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="asm-lab"
+                  title="201 - Anthos Service Mesh Lab"
+                  environment="web"
+                  feedback-link="https://codelabs.devnull.fyi">
+    
+      <google-codelab-step label="Overview" duration="5">
+        <p>Welcome to the Anthos Service Mesh labs!</p>
+<p>Over the course of these labs, you will learn &amp; explore how Anthos Service Mesh (ASM) can help support modern cloud application deployments through the following tasks.</p>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>1</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://cloud.google.com/service-mesh/docs/gke-cluster-setup#setting_up_new_cluster" target="_blank">Setup a new GKE cluster</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>2</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://cloud.google.com/service-mesh/docs/gke-install-asm" target="_blank">Install Anthos Service Mesh</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>3</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://cloud.google.com/service-mesh/docs/onlineboutique-install-kpt" target="_blank">Deploy a Sample Application</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>4</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://github.com/mvpzone/istio-samples/tree/master/istio-canary-gke" target="_blank">Execute Safe Application Rollouts</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>5</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-for-anthos-setup" target="_blank">Install Anthos Global Ingress</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>6</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-for-anthos" target="_blank">Deploy a global Application</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>7</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://cloud.google.com/service-mesh/docs/gke-install-multi-cluster" target="_blank">Configure Cross cluster service discovery</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>8</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://github.com/mvpzone/hipster/tree/master/mcrcp" target="_blank">Deploy a Multi-Cluster Application</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>9</p>
+</td><td colspan="1" rowspan="1"><p><a href="https://cloud.google.com/marketplace/docs/kubernetes-apps" target="_blank">Deploy a Marketplace Kubernetes Application</a></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Architecture</h2>
+<p>You will be using the <a href="https://github.com/GoogleCloudPlatform/microservices-demo.git" target="_blank">online boutique demo application</a> for most of the labs. Our final deployment architecture will be as follows.</p>
+<p class="image-container"><img alt="Anthos Service Mesh Labs Architecture" src="img/d0401967994ba90c.png"></p>
+<p><strong>NOTE:</strong> As of Aug 2020, these labs use Anthos Service Mesh (ASM) 1.6.4-asm.9.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Lab Pre-requisites" duration="5">
+        <p>To complete these labs an Anthos entitled service account is required, if you wish to execute these labs in your environments. Your hosts can provide instructions on how to get access to an entitled account. You can self-provision an entitled account by launching the <a href="https://console.cloud.google.com/marketplace/details/click-to-deploy-images/anthos-sample-deployment?_ga=2.89271251.912462658.1596769275-1489993943.1594165045" target="_blank">Anthos sample deployment</a> in your environment.</p>
+<p>You can find a summary of how to explore Anthos in your environment <a href="https://cloud.google.com/anthos/docs/tutorials/explore-anthos" target="_blank">here</a>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Environment Set-up" duration="3">
+        <p>There are various options to set-up your environment to work through the labs.</p>
+<ul>
+<li>Use Cloud Shell</li>
+<li>Use Command line tools installed locally</li>
+</ul>
+<p>You can find a summary of how to prepare your environment <a href="https://cloud.google.com/service-mesh/docs/environment-setup" target="_blank">here</a>.</p>
+<p>Congratulations! Now you&#39;re ready to deploy an application onto your simulated global cloud environment.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Reconnecting to your environment" duration="1">
+        <p>If you return to these labs later, your laptop goes to sleep, or your Cloud Shell is spontaneously disconnected, run the following commands:</p>
+<pre><code>export PROJECT_ID=&lt;your-project-id&gt;
+gcloud config set project $PROJECT_ID
+
+cd $HOME
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Having Trouble" duration="1">
+        <p>These labs are new for Q2 ‘20, and you may hit a roadblock or a bug. If this happens, email the labs Google Group - <a href="mailto:hybrid-sme-labs-2020@google.com" target="_blank">hybrid-sme-labs-2020@google.com</a>, and a lab owner will be in touch to help.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

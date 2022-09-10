@@ -1,0 +1,356 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>102 - Install Anthos</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="anthos-install"
+                  title="102 - Install Anthos"
+                  environment="web"
+                  feedback-link="http://mvpzone.org">
+    
+      <google-codelab-step label="Introduction" duration="2">
+        <p>Welcome to the Anthos Workshop labs! Over the course of these labs, you will learn &amp; explore how Anthos can help  manage hybrid cloud environments with a consistent set of deployment environments and tools.</p>
+<p>This first lab covers Anthos installation - creating multiple GKE clusters, then installing the Anthos components on those clusters. (We&#39;ll cover app deployments in the next lab.)</p>
+<p>Throughout these labs, we will consider various tasks from the perpspective of various personna&#39;s. While each lab includes technical steps for installing, operating, and securing an Anthos environment, it&#39;s likely that within an  organization, these tasks will be segmented and divided amongst different roles.</p>
+<h2 is-upgraded>What Lab 1 covers</h2>
+<ul>
+<li>Simple Anthos installation over multiple GKE clusters</li>
+<li>Creating 2 GKE clusters</li>
+<li>Installation of Anthos components on these clusters</li>
+</ul>
+<p>We&#39;ll cover app deployments in the next lab.</p>
+<h2 is-upgraded>Anthos Topology</h2>
+<p>By the end of Lab 1, you will have your own GCP project with the following Anthos setup:</p>
+<p class="image-container"><img alt="Lab 1 Anthos Topology" src="img/75aee9b8b6ef0483.png"></p>
+<p>Because this lab takes you through Anthos and GKE installation, this lab falls into the Platform Engineer role.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Prerequisites" duration="2">
+        <p>These following prerequisites apply to this and all subsequent Anthos workshop Labs.</p>
+<ul>
+<li>A GCP user account with the ability to create Projects.</li>
+<li>Join the lab discussion Google Group. You can use this Google Group to report problems with these labs, and ask questions.</li>
+<li>Install the <a href="https://chrome.google.com/webstore/detail/snipit/ehoadneljpdggcbbknedodolkkjodefl" target="_blank">SnipIt Google Chrome extension</a>. You will use this tool to screenshot your lab progress, and mark completion.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Prepare Your Environment" duration="15">
+        <ul>
+<li>[ ] Open Cloud Console - log into your user account if you are not already logged in.</li>
+<li>[ ] Open the Cloud Shell terminal by clicking on the shell icon at the top-right of the screen.</li>
+<li>[ ] From Cloud Shell, click cmd + or ctrl + to zoom in so that you can comfortably read the terminal text.</li>
+<li>[ ] From Cloud Shell, copy and paste the following commands to create a GCP project.</li>
+</ul>
+<p>For the rest of the labs, anytime you see a black box like this, you should copy and paste the commands into your Cloud Shell terminal.</p>
+<pre><code>export DATE=`date +&#34;%m%d%y-%H%M&#34;`
+export PROJECT_ID=&#34;${USER}-sme-${DATE}&#34;
+gcloud projects create ${PROJECT_ID}
+gcloud config set project ${PROJECT_ID}
+</code></pre>
+<p>Take note of your new project ID (-sme-) and store it somewhere safe. You will use this same project throughout all the workshop labs.</p>
+<ul>
+<li>[ ] Set your billing account as BILLING_ID. Your billing ID can be found by navigating to GCP &gt; choosing google.com as the org, In the hamburger menu navigate to the billing console and taking note of your Billing Account ID.</li>
+</ul>
+<pre><code>export BILLING_ID=&#34;&lt;your-id&gt;&#34;
+</code></pre>
+<ul>
+<li>[ ] Connect your new GCP project to your billing account.</li>
+</ul>
+<pre><code>gcloud alpha billing projects link $PROJECT_ID --billing-account $BILLING_ID
+</code></pre>
+<ul>
+<li>[ ] Clone the workshop repo, and navigate to the &#34;install&#34; directory.</li>
+</ul>
+<pre><code>cd $HOME; mkdir -p hybrid-sme; cd hybrid-sme;
+export ROOT=$HOME/hybrid-sme;
+git clone https://github.com/GoogleCloudPlatform/bank-of-anthos-scripts; cd bank-of-anthos-scripts/install/
+</code></pre>
+<ul>
+<li>[ ] Generate a new ssh key. You will use this key to authenticate Anthos Config Management with your Cloud Source Repositories.</li>
+</ul>
+<pre><code>GCLOUD_ACCOUNT=$(gcloud config get-value account)
+
+ssh-keygen -t rsa -b 4096 \
+-C &#34;$GCLOUD_ACCOUNT&#34; \
+-N &#39;&#39; \
+-f $HOME/.ssh/id_rsa.sme
+</code></pre>
+<p>If your instructor indicates that the project has been already set-up for you in your environment you can skip this step.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Install Anthos" duration="45">
+        <h2 is-upgraded>Run the bootstrap script</h2>
+<p>This script provisions the clusters, installs multicluster Istio, and pre-installs the Anthos Config Management operator.</p>
+<p><strong>Note:</strong> this script takes ~10 minutes to run.</p>
+<pre><code>cd $ROOT/bank-of-anthos-scripts/install
+source ./env
+./bootstrap.sh
+</code></pre>
+<p>This script deploys the following into your project:</p>
+<ul>
+<li>1 GKE cluster running in GCP</li>
+<li>1 simulated on-premises Kubernetes cluster (<a href="https://github.com/kubernetes/kops" target="_blank">Kops</a> on Google Compute Engine). You will register this cluster to Anthos as if it were running on prem.<br><br><ul>
+<li><strong>Note</strong> - Kops is not a supported &#34;Bring your own cluster&#34; (BYOK8s) environment.</li>
+<li>We include Kops only for ease of demo purposes, and to demonstrate registering and operating a non-GKE Kubernetes cluster using Anthos.</li>
+<li>You would follow a similar process for registering and managing GKE On Prem clusters.</li>
+</ul>
+</li>
+<li><a href="https://cloud.google.com/anthos/multicluster-management/connect" target="_blank">GKE Connect</a> installed on both the Kops cluster and the regular GKE cluster. This registers the clusters to the Anthos dashboard in addition to the GKE dashboard.</li>
+<li>A Cloud Source Repository, config-repo - you will store our Anthos policies here later.</li>
+<li><a href="https://cloud.google.com/anthos-config-management/docs/overview" target="_blank">Anthos Config Management</a> (<strong>ACM</strong>) - this &#34;syncer&#34; runs inside both clusters. it watches config-repo for any policy changes, and enforces those policies across both clusters.</li>
+<li><a href="https://istio.io/docs/concepts/what-is-istio/" target="_blank">Istio</a> (Service Mesh) installed on both clusters and configured for multicluster. Service Mesh handles cross-cluster Kubernetes networking between pods, allowing services in one cluster to reach services in another cluster using kubernetes DNS. Service Mesh can also generate app-level telemetry with no code changes, customize traffic routing, enforce security policies at runtime. Later, you&#39;ll explore how Service Mesh helps unify hybrid Kubernetes environments.<br><br><ul>
+<li>These labs use open-source Istio instead of the bundled Anthos Service Mesh (ASM). This is because as of July 2020, ASM hybrid multicluster mesh support is not yet GA.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Note:</strong> While this first iteration of the Anthos workshop labs only covers the three core Anthos subproducts: GKE, ACM, and ASM (plus Cloud Build), know that <a href="https://cloud.google.com/anthos#section-5" target="_blank">Anthos has more integrations</a> than what is covered in these labs.</p>
+<p>When the script successfully completes, you should see a Kubernetes Service Account (KSA) token printed to stdout. Copy the token by simply selecting the text - a scissors icon will appear. Do not use CTRL-C or CMD-C.</p>
+<pre><code>#Example output - do not copy
+
+eyJhbGciOiJSUzI1NiIsImtpZCI6InBXYTVfWGdBUGJlVUR6emxaaXlkMmJHcVI4WlMtb3N0RDhTSmdWcENVUFkifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlY....
+</code></pre>
+<p><strong>Note:</strong> In case you did not proceed to the next step immediately, you can use the following command to retrieve the token:</p>
+<pre><code>printf &#34;\n$(kubectl --kubeconfig=$ONPREM_KUBECONFIG describe secret $KSA | sed -ne &#39;s/^token: *//p&#39;)\n\n&#34;
+</code></pre>
+<h2 is-upgraded>Log into the remote cluster</h2>
+<p>In the Cloud Console, navigate to <strong>Kubernetes Engine</strong>.  You should see two clusters - gcp and onprem. Next to the onprem cluster, you should see a warning icon, and a message: &#34;Log in to cluster.&#34;</p>
+<p class="image-container"><img alt="Log in to remote cluster" src="img/8167f81f85b954ce.png"></p>
+<p>Next to the onprem cluster, click &#34;Login,&#34; then select &#34;Token&#34; as the login method. Paste the token you copied from Cloud Shell and click &#34;log in.&#34;</p>
+<p class="image-container"><img alt="Log in to cluster" src="img/41941ec5ef1afa6f.png"></p>
+<p>You should then see a green checkmark next to the onprem cluster, indicating that you have successfully logged in. Notice how the Cluster Type for the onprem cluster is &#34;Kubernetes&#34;. This indicates that the onprem cluster is not GKE, but rather an open-source Kubernetes cluster we&#39;ve registered to GCP as if it were a GKE cluster.</p>
+<p class="image-container"><img alt="Logged in" src="img/75f3932106ebd987.png"></p>
+<h2 is-upgraded>Explore clusters</h2>
+<p>View the two registered Anthos clusters in the Anthos dashboard.<br>In the left Console sidebar, click Anthos &gt; Clusters. You should see both clusters in the table - including the &#34;registered&#34; onprem cluster, and a message: &#34;all clusters healthy.&#34;</p>
+<p class="image-container"><img alt="Explore clusters" src="img/40ad5f0d1f0578bc.png"></p>
+<h2 is-upgraded>Explore cluster workloads</h2>
+<p>View Kubernetes workloads across clusters by navigating to Kubernetes Engine &gt; <strong>Workloads</strong>. View running workloads for both the onprem and gcp clusters. You should see workloads for <strong>gke-connect</strong> and <strong>Istio (Service mesh)</strong>.</p>
+<p class="image-container"><img alt="Cluster workloads" src="img/2be5be9f3ce4067e.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Set up Anthos Config Management" duration="30">
+        <p><strong>Anthos Config Management (ACM)</strong> is an agent running inside an Anthos cluster that &#34;syncs&#34; YAML configuration from a git repository. We&#39;ll use ACM later to unify configuration &amp; policy governance across the two clusters.  By default, ACM requires that your config repository is structured in a specific way to allow for hierarchical policy at the cluster and Kubernetes namespace-level.  In this task, you&#39;ll set up the ACM configuration repo that will be synced to your two Anthos clusters.</p>
+<h2 is-upgraded>Enable ACM in the Cloud Console.</h2>
+<pre><code>gcloud alpha container hub config-management enable
+</code></pre>
+<h2 is-upgraded>Create ACM config repository</h2>
+<p>Create a new Cloud Source repo called config-repo, clone to cloud shell, and initialize the repo structure. This will be the Git source of truth for config and policies synced across both clusters, through Anthos Config Management.</p>
+<pre><code>export PROJECT=$(gcloud config get-value project)
+export GCLOUD_ACCOUNT=$(gcloud config get-value account)
+export REPO_URL=https://source.developers.google.com/p/${PROJECT}/r/config-repo
+export ROOT=$HOME/hybrid-sme;
+
+git config credential.helper gcloud.sh
+gcloud source repos create config-repo
+cd $ROOT
+gcloud source repos clone config-repo
+cd $ROOT/config-repo
+
+cp -r $ROOT/bank-of-anthos-scripts/install/acm/config-repo-source/* .
+</code></pre>
+<pre><code>#Output - do not copy
+
+Cloning into &#39;/home/mokeefe/hybrid-sme/config-repo&#39;...
+warning: You appear to have cloned an empty repository.
+Project [mokeefe-sme-070620-1410] repository [config-repo] was cloned to [/home/mokeefe/hybrid-sme/config-repo].
+</code></pre>
+<p>View the local contents of your config-repo. This directory structure is required by default in Anthos Config Management. Each sub-directory has a different purpose. For instance, we will create a directory under &#34;namespaces,&#34; called &#34;boa,&#34; which adds the namespace into which we&#39;ll deploy an application in Lab 2.</p>
+<pre><code>tree $ROOT/config-repo
+</code></pre>
+<pre><code>#Output - do not copy
+
+/home/mokeefe/hybrid-sme/config-repo
+├── cluster
+│   └── README.md
+├── clusterregistry
+│   ├── clusters.yaml
+│   └── selectors.yaml
+├── namespaces
+│   ├── boa
+│   │   └── namespace.yaml
+│   └── README.md
+└── system
+    └── repo.yaml
+
+5 directories, 6 files
+
+</code></pre>
+<p>Set your git credentials.</p>
+<pre><code>git config --global user.email ${USER}@&#34;your domain&#34;
+git config --global user.name ${USER}
+</code></pre>
+<p>Push the contents of config-repo to Cloud Source Repositories.</p>
+<pre><code>cd $ROOT/config-repo
+git add .
+git commit -m &#34;Initialize config-repo&#34;
+git push -u origin master
+</code></pre>
+<pre><code>Output - do not copy
+
+Enumerating objects: 13, done.
+Counting objects: 100% (13/13), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (10/10), done.
+Writing objects: 100% (13/13), 1.48 KiB | 757.00 KiB/s, done.
+Total 13 (delta 3), reused 0 (delta 0)
+remote: Resolving deltas: 100% (3/3)
+To https://source.developers.google.com/p/mokeefe-sme-070620-1410/r/config-repo
+ * [new branch]      master -&gt; master
+Branch &#39;master&#39; set up to track remote branch &#39;master&#39; from &#39;origin&#39;.
+
+</code></pre>
+<h2 is-upgraded>Give ACM access to config-repo</h2>
+<p>Allow ACM to view the repo, by mounting an ssh key as a secret into both clusters.<br>Throughout these labs, you will use the kubectx tool which allows you to easily switch between different Kubernetes cluster contexts.</p>
+<pre><code>kubectx gcp
+kubectl create secret generic git-creds \
+--namespace=config-management-system \
+--from-file=ssh=$HOME/.ssh/id_rsa.sme
+
+kubectx onprem
+kubectl create secret generic git-creds \
+--namespace=config-management-system \
+--from-file=ssh=$HOME/.ssh/id_rsa.sme
+</code></pre>
+<p>Copy the ssh key to your clipboard by selecting the text until a scissors icon appears. do not use cmd-c to copy.</p>
+<pre><code>cat $HOME/.ssh/id_rsa.sme.pub
+</code></pre>
+<p>In a new browser tab, navigate to: <a href="https://source.cloud.google.com/user/ssh_keys" target="_blank">https://source.cloud.google.com/user/ssh_keys</a>, then click &#34;Register SSH key&#34;</p>
+<p class="image-container"><img alt="Regsiter ssh key" src="img/170caa1522096106.png"></p>
+<p>Name the key anything you&#39;d like - then paste the key, starting with &#34;ssh-rsa&#34;, you just copied. Then click &#34;Register&#34;</p>
+<p><strong>Note:</strong> this key is registered to your GCP account, not your project.</p>
+<p class="image-container"><img alt="SSH Key" src="img/7d11e70db1142589.png"></p>
+<h2 is-upgraded>Configure config sync agent on both clusters</h2>
+<p>Configure the config sync agent on both clusters, to watch your new config-repo.</p>
+<pre><code>export BASE_DIR=&#34;$ROOT/bank-of-anthos-scripts/install&#34;
+export ONPREM=onprem
+export GCP=gcp
+REPO_URL=ssh://${GCLOUD_ACCOUNT}@source.developers.google.com:2022/p/${PROJECT}/r/config-repo
+
+kubectx $ONPREM
+cat $BASE_DIR/acm/config_sync.yaml | \
+  sed &#39;s|&lt;REPO_URL&gt;|&#39;&#34;$REPO_URL&#34;&#39;|g&#39; | \
+  sed &#39;s|&lt;CLUSTER_NAME&gt;|&#39;&#34;$ONPREM&#34;&#39;|g&#39; | \
+  sed &#39;s|none|ssh|g&#39; | \
+  kubectl apply -f - 
+
+kubectx $GCP
+cat $BASE_DIR/acm/config_sync.yaml | \
+  sed &#39;s|&lt;REPO_URL&gt;|&#39;&#34;$REPO_URL&#34;&#39;|g&#39; | \
+  sed &#39;s|&lt;CLUSTER_NAME&gt;|&#39;&#34;$GCP&#34;&#39;|g&#39; | \
+  sed &#39;s|none|ssh|g&#39; | \
+  kubectl apply -f -
+</code></pre>
+<pre><code>#Output - do not copy
+
+configmanagement.configmanagement.gke.io/config-management created
+</code></pre>
+<h2 is-upgraded>Validate ACM status</h2>
+<p>The &#34;<a href="https://cloud.google.com/anthos-config-management/docs/how-to/nomos-command" target="_blank">nomos</a>&#34; command-line tool checks each cluster&#39;s ACM sync status against the config repo. <code>nomos status</code> tells you what Git commit token each cluster is synced to.</p>
+<p>The nomos command was installed to your environment when the bootstrap script ran in Task 3. If you want to manually install nomos to your local environment, you can <a href="https://cloud.google.com/anthos-config-management/downloads#nomos_command" target="_blank">download it here</a>.</p>
+<pre><code>watch nomos status
+</code></pre>
+<p>Within a few minutes, you should see the git sync status move from UNKNOWN, to PENDING, to SYNCED.  You may also see an &#34;ERROR&#34; status for the first few minutes (no endpoints available for service &#34;gatekeeper-webhook-service&#34;) - this is normal, and indicates that the ACM pods are still starting up.</p>
+<p>You should eventually see a <strong>SYNCED</strong> status for both clusters. The &#34;Last Synced Token&#34; is the git commit ID for the config-repo git push you just did.</p>
+<pre><code>#Output - do not copy
+
+Connecting to clusters...
+Current   Context   Status           Last Synced Token   Sync Branch
+-------   -------   ------           -----------------   -----------
+          gcp       SYNCED           71cbe02a            master
+*         onprem    SYNCED           71cbe02a            master
+
+</code></pre>
+<p>View the ACM status in the Cloud Console</p>
+<p>This is another way to view the git sync status. Navigate to Anthos &gt; Config Management. This table displays the same status you would see if you ran <code>nomos status</code>.</p>
+<p class="image-container"><img alt="ACM UI Status" src="img/ec48c6c9f492c3d2.png"></p>
+<h2 is-upgraded>Validate ACM Namespace</h2>
+<p>Get namespaces on both clusters.</p>
+<p>You should see a new namespace, called boa (&#34;Bank of Anthos&#34;) synced to both clusters via ACM. &#34;boa&#34; is the application namespace you will use in this training, centrally administered with ACM. In the next lab, you will use Cloud Build to deploy a sample application into the &#34;boa&#34; namespace on both clusters - then later, you&#39;ll use ACM to enforce policies for the developers deploying into this namespace.</p>
+<pre><code>kubectx gcp
+kubectl get ns
+kubectx onprem
+kubectl get ns
+
+</code></pre>
+<pre><code>#Output - do not copy
+
+NAME                       STATUS   AGE
+config-management-system   Active   50m
+default                    Active   52m
+boa                        Active   38s
+...
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Lab Completion" duration="2">
+        <p>Congratulations! You just installed the core Anthos components on your GCP project. Now you&#39;re ready to deploy an application onto your simulated hybrid cloud environment.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Learn More" duration="2">
+        <ul>
+<li><a href="https://cloud.google.com/anthos/multicluster-management/use-cases" target="_blank">Multicluster Kubernetes Use Cases</a></li>
+<li><a href="https://cloud.google.com/anthos/docs/concepts/overview" target="_blank">Anthos technical overview</a></li>
+<li><a href="https://cloud.google.com/anthos/multicluster-management/environs" target="_blank">Anthos Environs</a><ul>
+<li><em>not used in these labs - a logical grouping of clusters + resources</em></li>
+</ul>
+</li>
+<li>eBook - <a href="https://inthecloud.withgoogle.com/content-anthos/dl-cd.html" target="_blank">Anthos Under the Hood (2020)</a></li>
+<li>GKE on GCP - Tutorial - <a href="https://cloud.google.com/anthos/docs/tutorials/explore-anthos" target="_blank">Explore Anthos (Sample Deployment - 2 GKE on GCP clusters)</a></li>
+<li><a href="https://cloud.google.com/anthos-config-management/docs" target="_blank">Anthos Config Management docs</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Appendix - Reconnecting to Labs" duration="2">
+        <p>If you have to pause this lab and return to it later - or if your Cloud Shell becomes disconnected, re-open or refresh the Cloud Shell page. Once you are connected, execute the following commands:</p>
+<pre><code>export PROJECT_ID=&lt;your-sme-project-id&gt;
+gcloud config set project $PROJECT_ID
+
+cd $HOME/hybrid-sme/bank-of-anthos-scripts/install
+source ./env
+source ./common/install-tools.sh
+</code></pre>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
