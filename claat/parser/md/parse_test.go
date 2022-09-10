@@ -22,6 +22,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/googlecodelabs/tools/claat/nodes"
 	"github.com/googlecodelabs/tools/claat/parser"
 	"github.com/googlecodelabs/tools/claat/types"
 )
@@ -52,29 +53,29 @@ func parseCodelab(markup string, opts parser.Options) (*types.Codelab, error) {
 	return p.Parse(r, opts)
 }
 
-func parseFragment(markup string) ([]types.Node, error) {
+func parseFragment(markup string) ([]nodes.Node, error) {
 	r := strings.NewReader(markup)
 	p := &Parser{}
 
-	opts := *parser.NewOptions(parser.Blackfriday)
+	opts := *parser.NewOptions()
 	return p.ParseFragment(r, opts)
 }
 
-func stringify(nodes []types.Node, level string) string {
+func stringify(nodesToStringify []nodes.Node, level string) string {
 	var content []string
-	for _, node := range nodes {
+	for _, node := range nodesToStringify {
 		base := fmt.Sprintf("%+v", node)
-		if node.Type() == types.NodeItemsList {
-			children := []types.Node{}
-			for _, list := range node.(*types.ItemsListNode).Items {
+		if node.Type() == nodes.NodeItemsList {
+			children := []nodes.Node{}
+			for _, list := range node.(*nodes.ItemsListNode).Items {
 				children = append(children, list)
 			}
 
 			base += "\n" + level + " Child Nodes: vvvv \n" + stringify(children, level+">") + "\n" + level + " Child Nodes: ^^^^"
 		}
 
-		if node.Type() == types.NodeList {
-			base += "\n" + level + " Child Nodes: vvvv \n" + stringify(node.(*types.ListNode).Nodes, level+">") + "\n" + level + " Child Nodes: ^^^^"
+		if node.Type() == nodes.NodeList {
+			base += "\n" + level + " Child Nodes: vvvv \n" + stringify(node.(*nodes.ListNode).Nodes, level+">") + "\n" + level + " Child Nodes: ^^^^"
 		}
 
 		content = append(content, base)
@@ -86,7 +87,7 @@ func stringify(nodes []types.Node, level string) string {
 func TestHandleCodelabTitle(t *testing.T) {
 	// Set up.
 	title := "Egret"
-	c := mustParseCodelab(fmt.Sprintf("# %s", title), *parser.NewOptions(parser.Blackfriday))
+	c := mustParseCodelab(fmt.Sprintf("# %s", title), *parser.NewOptions())
 
 	if c.Title != title {
 		t.Errorf("[%q] got %v, want %v", title, c.Title, title)
@@ -122,7 +123,7 @@ func TestProcessDuration(t *testing.T) {
 
 	for i, tc := range tests {
 		content := fmt.Sprintf(stdHeader+"\n## Step Title\nDuration: %v\n", tc.in)
-		c := mustParseCodelab(content, *parser.NewOptions(parser.Blackfriday))
+		c := mustParseCodelab(content, *parser.NewOptions())
 		out := time.Duration(c.Duration) * time.Minute
 
 		if out != tc.out {
@@ -152,7 +153,7 @@ Duration: %v
 			content += fmt.Sprintf(tmp, dur)
 		}
 
-		c := mustParseCodelab(content, *parser.NewOptions(parser.Blackfriday))
+		c := mustParseCodelab(content, *parser.NewOptions())
 		if c.Duration != tc.out {
 			t.Errorf("%d: wanted duration %d but got %d", i, c.Duration, tc.out)
 		}
@@ -179,14 +180,14 @@ authors: john smith
 summary: abcdefghij
 categories: not, really
 environments: kiosk, web
-analytics account: 12345
-feedback link: https://www.google.com
+analytics_account: 12345
+feedback_link: https://www.google.com
 
 ---
 `
 	content += ("# " + title)
 
-	c := mustParseCodelab(content, *parser.NewOptions(parser.Blackfriday))
+	c := mustParseCodelab(content, *parser.NewOptions())
 	if !reflect.DeepEqual(c.Meta, wantMeta) {
 		t.Errorf("\ngot:\n%+v\nwant:\n%+v", c.Meta, wantMeta)
 	}
@@ -204,7 +205,7 @@ func TestParseMetadataPassMetadata(t *testing.T) {
 		Feedback:   "https://www.google.com",
 		GA:         "12345",
 		Extra: map[string]string{
-			"extrafieldtwo": "bbbbb",
+			"extra_field_two": "bbbbb",
 		},
 	}
 
@@ -214,18 +215,18 @@ authors: john smith
 summary: abcdefghij
 categories: not, really
 environments: kiosk, web
-analytics account: 12345
-feedback link: https://www.google.com
-extrafieldone: aaaaa
-extrafieldtwo: bbbbb
+analytics_account: 12345
+feedback_link: https://www.google.com
+extra_field_one: aaaaa
+extra_field_two: bbbbb
 
 ---
 `
 	content += ("# " + title)
 
-	opts := *parser.NewOptions(parser.Blackfriday)
+	opts := *parser.NewOptions()
 	opts.PassMetadata = map[string]bool{
-		"extrafieldtwo": true,
+		"extra_field_two": true,
 	}
 
 	c := mustParseCodelab(content, opts)
@@ -276,8 +277,8 @@ authors: john smith
 summary: abcdefghij
 categories: not, really
 environments: kiosk, web
-analytics account: 12345
-feedback link: https://www.google.com
+analytics_account: 12345
+feedback_link: https://www.google.com
 extrafieldone: aaaaa
 extrafieldtwo: bbbbb
 
@@ -393,10 +394,10 @@ I'm going to inject some HTML
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			lab := mustParseCodelab(test.input, *parser.NewOptions(parser.Blackfriday))
+			lab := mustParseCodelab(test.input, *parser.NewOptions())
 			var got []string
 			for _, s := range lab.Steps {
-				for _, n := range types.ImportNodes(s.Content.Nodes) {
+				for _, n := range nodes.ImportNodes(s.Content.Nodes) {
 					got = append(got, n.URL)
 				}
 			}

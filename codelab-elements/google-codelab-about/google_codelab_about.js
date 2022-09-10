@@ -28,9 +28,6 @@ const LAST_UPDATED_ATTR = 'last-updated';
 const AUTHORS_ATTR = 'authors';
 
 /** @const {string} */
-const BADGE_PATH_ATTR = 'badge-path';
-
-/** @const {string} */
 const CODELAB_TITLE_ATTR = 'codelab-title';
 
 /**
@@ -44,20 +41,17 @@ class CodelabAbout extends HTMLElement {
   constructor() {
     super();
 
-    /** @private {?string} */
-    this.authors_ = null;
+    /** @private {string} */
+    this.authors_ = '';
 
-    /** @private {?string} */
-    this.codelabTitle_ = null;
+    /** @private {string} */
+    this.codelabTitle_ = '';
 
     /** @private {boolean} */
     this.hasSetup_ = false;
 
-    /** @private {?string} */
-    this.lastUpdated_ = null;
-
-    /** @private {?string} */
-    this.badgePath_ = null;
+    /** @private {string} */
+    this.lastUpdated_ = '';
   }
 
   /**
@@ -69,6 +63,12 @@ class CodelabAbout extends HTMLElement {
       this.setupDom_();
     }
   }
+
+  /**
+   * @export
+   * @override
+   */
+  disconnectedCallback() {}
 
   /**
    * @return {!Array<string>}
@@ -103,11 +103,6 @@ class CodelabAbout extends HTMLElement {
           this.codelabTitle_ = this.getAttribute(CODELAB_TITLE_ATTR);
         }
         break;
-      case BADGE_PATH_ATTR:
-        if (this.hasAttribute(BADGE_PATH_ATTR)) {
-          this.badgePath_ = this.getAttribute(BADGE_PATH_ATTR);
-        }
-        break;
     }
 
     this.setupDom_();
@@ -137,7 +132,6 @@ class CodelabAbout extends HTMLElement {
       lastUpdated: CodelabAbout.formatDate_(this.lastUpdated_),
       authors: this.authors_,
       codelabTitle: this.codelabTitle_.split(':').join(':||').split('||'),
-      badgePath: this.badgePath_,
     });
 
     this.hasSetup_ = true;

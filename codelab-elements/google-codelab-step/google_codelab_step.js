@@ -62,9 +62,9 @@ class CodelabStep extends HTMLElement {
     this.hasSetup_ = false;
 
     /**
-     * @private {string}
+     * @private {number}
      */
-    this.step_ = '0';
+    this.step_ = 0;
 
     /**
      * @private {string}
@@ -97,6 +97,12 @@ class CodelabStep extends HTMLElement {
   }
 
   /**
+   * @export
+   * @override
+   */
+  disconnectedCallback() {}
+
+  /**
    * @return {!Array<string>}
    * @export
    */
@@ -127,7 +133,7 @@ class CodelabStep extends HTMLElement {
     }
 
     if (this.hasAttribute(STEP_ATTR)) {
-      this.step_ = this.getAttribute(STEP_ATTR);
+      this.step_ = parseInt(this.getAttribute(STEP_ATTR) || '', 10);
     }
 
     if (!this.title_) {
@@ -169,11 +175,15 @@ class CodelabStep extends HTMLElement {
     dom.appendChild(this.instructions_, this.inner_);
     dom.removeChildren(this);
 
-    // Generate the title using a soy template.
-    const title = soy.renderAsElement(Templates.title, {
-      step: this.step_,
-      label: this.label_,
-    });
+    // Get the rendered title.
+    let title = this.inner_.querySelector('.step-title');
+    if (!title) {
+      // Generate the title using a soy template.
+      title = soy.renderAsElement(Templates.title, {
+        step: this.step_,
+        label: this.label_,
+      });
+    }
     this.title_ = title;
 
     // Inject the title in the containers.

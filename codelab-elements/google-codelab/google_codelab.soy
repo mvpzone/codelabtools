@@ -21,17 +21,17 @@
  * Renders the main structure
  */
 {template .structure}
+  {@param? feedback: string}
   {@param homeUrl: string}
 
-  <div id="drawer"></div>
   <div id="codelab-title">
     <div id="codelab-nav-buttons">
       <a href="{$homeUrl}" id="arrow-back"><i class="material-icons">close</i></a>
       <a href="#" id="menu"><i class="material-icons">menu</i></a>
     </div>
     <div class="codelab-time-container"></div>
-    <devsite-user></devsite-user>
   </div>
+  <nav id="drawer"></nav>
   <div id="main">
     <div id="steps"></div>
     <div id="controls">
@@ -73,6 +73,14 @@
       </div>
     </div>
   </div>
+  <div class="metadata">
+    <a {if $feedback}target="_blank" href="{$feedback}"{else}href="#" id="codelab-feedback"{/if}>
+      <i class="material-icons">bug_report</i> {msg desc="Button that the user can click to report
+          an bug or error."}
+        Report a mistake
+      {/msg}
+    </a>
+  </div>
 {/template}
 
 /**
@@ -80,9 +88,10 @@
  */
 {template .title}
   {@param title: string}
+  {@param url: string}
 
   <h1 is-upgraded class="title">
-    {$title}
+    <a href="{$url}">{$title}</a>
   </h1>
 {/template}
 
@@ -93,10 +102,20 @@
   {@param time: number}
 
   <div class="time-remaining"
+       tabindex="0"
+       role="timer"
        title=
-           "{msg desc="Label indicating expected time remaining for user to complete codelab."}
-             Time remaining
-           {/msg}">
+           "{if $time == 1}
+             {msg desc="Tooltip indicating expected time remaining (1 minute) for user to complete
+                 codelab."}
+               Estimated time remaining: {$time} minute
+             {/msg}
+           {else}
+             {msg desc="Tooltip indicating expected time remaining in minutes for user to complete
+                 codelab."}
+               Estimated time remaining: {$time} minutes
+             {/msg}
+           {/if}">
     <i class="material-icons">access_time</i>
     {if $time == 1}
       {msg desc="Label indicating expected time remaining (1 minute) for user to complete codelab."}
@@ -115,7 +134,6 @@
  */
 {template .drawer}
   {@param steps: list<string>}
-  {@param? feedback: string}
 
   <div class="codelab-time-container"></div>
   <div class="steps">
@@ -126,13 +144,5 @@
         </li>
       {/for}
     </ol>
-  </div>
-  <div class="metadata">
-    <a {if $feedback}target="_blank" href="{$feedback}"{else}href="#" id="codelab-feedback"{/if}>
-      <i class="material-icons">bug_report</i> {msg desc="Button that the user can click to report
-          an bug or error."}
-        Report a mistake
-      {/msg}
-    </a>
   </div>
 {/template}
